@@ -2,47 +2,49 @@
 
 @section('content')
     <div class="container">
-        <h1>All Insurances</h1>
+        <h1>Усі види страхувань</h1>
 
         @if($insurances->count() > 0)
-            <table class="table table-striped table-bordered" id="insurances-table">
-                <thead>
-                <tr>
-                    <th>Insurance Type</th>
-                    <th>Monthly Contribution</th>
-                    <th>Policy Term</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Number of Contributions</th>
-                    <th>Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach($insurances as $insurance)
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" style="width: 100%" id="insurances-table">
+                    <thead>
                     <tr>
-                        <td>{{ $insurance->insuranceType->name }}</td>
-                        <td>{{ $insurance->monthly_contribution }}</td>
-                        <td>{{ $insurance->policy_term }}</td>
-                        <td>{{ $insurance->start_date }}</td>
-                        <td>{{ $insurance->end_date }}</td>
-                        <td>{{ $insurance->number_of_contributions }}</td>
-                        <td>
-                            <a href="{{ route('backend.insurances.edit', $insurance->id) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
-                            <form action="{{ route('backend.insurances.destroy', $insurance->id) }}" method="post" class="d-inline">
-                                @csrf
-                                @method('delete')
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Ви впевнені, що хочете видалити це страхування?')"><i class="fas fa-trash"></i></button>
-                            </form>
-                        </td>
+                        <th>Тип страхування</th>
+                        <th>Щомісячний внесок</th>
+                        <th>Дата початку</th>
+                        <th>Дата закінчення</th>
+                        <th>Термін полісу</th>
+                        <th>Кількість внесків</th>
+                        <th>Дії</th>
                     </tr>
-                @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    @foreach($insurances as $insurance)
+                        <tr>
+                            <td>{{ $insurance->insuranceType->name }}</td>
+                            <td>{{ $insurance->monthly_fee }}</td>
+                            <td>{{ $insurance->start_date }}</td>
+                            <td>{{ $insurance->end_date }}</td>
+                            <td>{{ \Carbon\Carbon::parse($insurance->end_date)->diffInDays(\Carbon\Carbon::parse($insurance->start_date)) }}</td>
+                            <td>{{ $insurance->number_of_contributions }}</td>
+                            <td>
+                                <a href="{{ route('backend.insurances.edit', $insurance->id) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                                <form action="{{ route('backend.insurances.destroy', $insurance->id) }}" method="post" class="d-inline">
+                                    @csrf
+                                    @method('delete')
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Ви впевнені, що хочете видалити це страхування?')"><i class="fas fa-trash"></i> Видалити</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
         @else
-            <p>No insurances found.</p>
+            <p>Страхувань не знайдено.</p>
         @endif
 
-        <a href="{{ route('backend.insurances.create') }}" class="btn btn-success">Create Insurance</a>
+        <a href="{{ route('backend.insurances.create') }}" class="btn btn-success">Створити страхування</a>
     </div>
 @endsection
 

@@ -11,6 +11,7 @@ class CreateInsuranceTypesTable extends Migration
         Schema::create('insurance_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->json('additional_fields')->nullable();
             $table->timestamps();
         });
     }

@@ -3,10 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Insurance;
+use App\Models\InsuranceType;
 use Illuminate\Http\Request;
 
-class ProfileController extends Controller
+class InsuranceController extends Controller
 {
+    public function homePage()
+    {
+        $insuranceType = InsuranceType::all();
+        return view('welcome', compact('insuranceType'));
+    }
     public function index()
     {
         return view('profile.index');

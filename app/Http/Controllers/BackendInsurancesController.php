@@ -14,7 +14,7 @@ class BackendInsurancesController extends Controller
 {
     public function create()
     {
-        $claims = Claim::all();
+        $claims = Claim::where('service_type','policy')->get();
         $insuranceTypes = InsuranceType::all();
         $users = User::all();
 
@@ -66,11 +66,18 @@ class BackendInsurancesController extends Controller
         return redirect()->route('backend.insurances.edit', $id)->with('success', 'Поліс успішно оновлений');
     }
 
-    public function destroy($id)
+    public function destroy($id): \Illuminate\Http\RedirectResponse
     {
-        $insurance = Insurance::findOrFail($id);
-        $insurance->delete();
+        $claim = Claim::findOrFail($id);
+
+        $insuranceId = $claim->insurance_id;
+
+        Insurance::findOrFail($insuranceId)->delete();
+
+        $claim->delete();
 
         return redirect()->route('backend.insurances.create')->with('success', 'Поліс успішно видалений');
     }
+
+
 }

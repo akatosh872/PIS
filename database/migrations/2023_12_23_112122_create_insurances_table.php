@@ -10,19 +10,15 @@ class CreateInsurancesTable extends Migration
     {
         Schema::create('insurances', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('claim_id');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('insurance_type_id');
-            $table->decimal('monthly_fee', 10, 2); // Щомісячний внесок
-            $table->date('start_date'); // Дата початку дії полісу
-            $table->date('end_date'); // Дата закінчення дії полісу
-            $table->integer('installments')->default(0); // Кількість внесків
+            $table->foreignId('claim_id')->constrained('claims');
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('insurance_type_id')->constrained('insurance_types');
+            $table->decimal('monthly_fee', 10, 2);
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->integer('installments')->default(0);
             $table->boolean('enable')->default(false);
             $table->timestamps();
-
-            $table->foreign('claim_id')->references('id')->on('claims')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('insurance_type_id')->references('id')->on('insurance_types')->onDelete('cascade');
         });
     }
 

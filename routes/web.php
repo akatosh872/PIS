@@ -1,13 +1,14 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\BackendInsurancesController;
 use App\Http\Controllers\BackendClaimController;
 use App\Http\Controllers\PaymentController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RegistrationController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ClaimController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,56 +21,78 @@ use App\Http\Controllers\ClaimController;
 |
 */
 
-
-
+// Головна сторінка
 Route::get('/', function () {
     return view('welcome');
 });
 
+// Авторизовані користувачі
 Route::middleware(['auth:web'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile', [InsuranceController::class, 'index'])->name('profile.index');
 
-    Route::get('/claim/create', [ClaimController::class, 'create'])->name('claim.create');
-    Route::post('/claim/create', [ClaimController::class, 'store'])->name('claim.store');
-    Route::get('/claim/show/{id}', [ClaimController::class, 'show'])->name('claim.show');
-    Route::get('/claim/shows/', [ClaimController::class, 'shows'])->name('claim.shows');
+    // Заявки
+    Route::prefix('claim')->group(function () {
+        Route::get('/create', [ClaimController::class, 'create'])->name('claim.create');
+        Route::post('/create', [ClaimController::class, 'store'])->name('claim.store');
+        Route::get('/show/{id}', [ClaimController::class, 'show'])->name('claim.show');
+        Route::get('/shows', [ClaimController::class, 'shows'])->name('claim.shows');
+    });
 
-    Route::get('/profile/insurances', [ProfileController::class, 'insurances'])->name('profile.insurances');
-    Route::get('/profile/insurance/{id}', [ProfileController::class, 'insurance'])->name('profile.insurance');
+    // Страховки
+    Route::prefix('profile')->group(function () {
+        Route::get('/insurances', [InsuranceController::class, 'insurances'])->name('profile.insurances');
+        Route::get('/insurance/{id}', [InsuranceController::class, 'insurance'])->name('profile.insurance');
+    });
 
-    Route::get('/payment/form', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
-    Route::post('/payment/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+    // Платежи
+    Route::prefix('payment')->group(function () {
+        Route::get('/form', [PaymentController::class, 'showPaymentForm'])->name('payment.form');
+        Route::post('/process', [PaymentController::class, 'processPayment'])->name('payment.process');
+    });
 });
 
+// Гостьові користувачі
 Route::middleware(['guest:web'])->group(function () {
+    // Регистрація
     Route::get('/registration', [RegistrationController::class, 'showRegistrationForm']);
     Route::post('/registration', [RegistrationController::class, 'processRegistration']);
 
+    // Вход
     Route::get('/login', [RegistrationController::class, 'showLoginForm']);
     Route::post('/login', [RegistrationController::class, 'processLogin']);
 });
 
-
-Route::group(['prefix' => 'backend'], function () {
+// Backend
+Route::prefix('backend')->group(function () {
+    // Авторизація для працівників
     Route::get('/login', [EmployeeController::class, 'showLoginForm'])->name('backend.login');
     Route::post('/login', [EmployeeController::class, 'login']);
 
+    // Головна сторінка
     Route::middleware('auth:employee')->get('/home', function () {
         return view('backend.home');
     });
+
     Route::middleware('guest:employee')->get('/', function () {
         return redirect()->route('backend.login');
     });
 
-    Route::middleware('auth:employee')->get('/claim/shows', [BackendClaimController::class, 'showAllClaims'])->name('backend.shows');
-    Route::middleware('auth:employee')->get('/show/{id}', [BackendClaimController::class, 'show'])->name('backend.show');
-    Route::middleware('auth:employee')->put('/update-status/{id}', [BackendClaimController::class, 'updateStatus'])->name('backend.updateStatus');
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('backend.analytics');
 
-    Route::get('/insurances', [BackendInsurancesController::class, 'shows'])->name('backend.insurances.shows');
-    Route::get('/insurances/create', [BackendInsurancesController::class, 'create'])->name('backend.insurances.create');
-    Route::post('/insurances', [BackendInsurancesController::class, 'store'])->name('backend.insurances.store');
-    Route::get('/insurances/{id}/edit', [BackendInsurancesController::class, 'edit'])->name('backend.insurances.edit');
-    Route::put('/insurances/{id}', [BackendInsurancesController::class, 'update'])->name('backend.insurances.update');
-    Route::delete('/insurances/{id}', [BackendInsurancesController::class, 'destroy'])->name('backend.insurances.destroy');
+    // Заявки
+    Route::middleware('auth:employee')->group(function () {
+        Route::get('/claim/shows', [BackendClaimController::class, 'showAllClaims'])->name('backend.shows');
+        Route::get('/show/{id}', [BackendClaimController::class, 'show'])->name('backend.show');
+        Route::put('/update-claim/{id}', [BackendClaimController::class, 'updateClaim'])->name('backend.updateClaim');
+    });
 
+    // Страховки
+    Route::group(['prefix' => 'insurances'], function () {
+        Route::get('/', [BackendInsurancesController::class, 'shows'])->name('backend.insurances.shows');
+        Route::get('/create', [BackendInsurancesController::class, 'create'])->name('backend.insurances.create');
+        Route::post('/', [BackendInsurancesController::class, 'store'])->name('backend.insurances.store');
+        Route::get('/{id}/edit', [BackendInsurancesController::class, 'edit'])->name('backend.insurances.edit');
+        Route::put('/{id}', [BackendInsurancesController::class, 'update'])->name('backend.insurances.update');
+        Route::delete('/{id}', [BackendInsurancesController::class, 'destroy'])->name('backend.insurances.destroy');
+    });
 });

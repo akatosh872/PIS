@@ -14,6 +14,8 @@ class Claim extends Model
         'contact',
         'information',
         'status_id',
+        'service_type',
+        'insurance_id',
         'insurance_type_id'
     ];
 
@@ -25,6 +27,11 @@ class Claim extends Model
     public function insuranceType()
     {
         return $this->belongsTo(InsuranceType::class, 'insurance_type_id');
+    }
+
+    public function insurance()
+    {
+        return $this->belongsTo(Insurance::class, 'insurance_id');
     }
 
     public function user()

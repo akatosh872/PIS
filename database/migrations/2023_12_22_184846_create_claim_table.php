@@ -10,15 +10,14 @@ class CreateClaimTable extends Migration
     {
         Schema::create('claims', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->foreignId('user_id')->constrained();
             $table->string('contact');
             $table->text('information');
-            $table->unsignedBigInteger('status_id');
-            $table->unsignedBigInteger('insurance_type_id')->nullable();
+            $table->string('service_type');
+            $table->foreignId('status_id')->constrained();
+            $table->foreignId('insurance_type_id')->nullable()->constrained();
+            $table->unsignedBigInteger('insurance_id')->nullable();
             $table->timestamps();
-
-            $table->foreign('status_id')->references('id')->on('statuses');
-            $table->foreign('insurance_type_id')->references('id')->on('insurance_types');
         });
     }
 

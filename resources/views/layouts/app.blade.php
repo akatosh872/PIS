@@ -50,7 +50,7 @@
                         <a class="nav-link" href="{{ route('profile.insurances') }}">Поліси</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('claim.shows') }}">Заяви на поліс</a>
+                        <a class="nav-link" href="{{ route('claim.shows') }}">Залишити заяву</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('profile.index') }}">Особистий кабінет ({{ Auth::user()->name }})</a>
@@ -67,6 +67,26 @@
 </div>
 
 <!-- Футер -->
+<div class="container">
+    <h2>Наші переваги</h2>
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ asset('icons/quality.png') }}" width="64px" height="64px">
+            <h3>Якість</h3>
+            <p>Ми пропонуємо вам тільки перевірені та надійні страхові продукти, які відповідають міжнародним стандартам.</p>
+        </div>
+        <div class="col-md-4">
+            <img src="{{ asset('icons/price.png') }}" width="64px" height="64px">
+            <h3>Ціна</h3>
+            <p>Ми працюємо без посередників та додаткових комісій, тому ми можемо запропонувати вам найкращі ціни на ринку.</p>
+        </div>
+        <div class="col-md-4">
+            <img src="{{ asset('icons/service.png') }}" width="64px" height="64px">
+            <h3>Сервіс</h3>
+            <p>Ми завжди готові допомогти вам у вирішенні будь-яких питань, пов'язаних зі страхуванням. Ми пропонуємо вам онлайн-консультації, гарячу лінію та персонального менеджера.</p>
+        </div>
+    </div>
+</div>
 <footer class="bg-dark text-white p-4 text-center footer">
     <p>© 2023 Страхування. Всі права захищені.</p>
 </footer>
