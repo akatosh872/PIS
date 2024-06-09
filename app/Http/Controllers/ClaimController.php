@@ -5,17 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\ClientDocument;
 use App\Models\Compensation;
 use App\Models\Insurance;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Claim;
-use App\Models\Statuses;
 use App\Models\InsuranceType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\JsonResponse;
 
 class ClaimController extends Controller
 {
-    public function show($id)
+    public function showClaim($id)
     {
         $claim = Claim::with(['status', 'insuranceType', 'insurance'])->findOrFail($id);
         $documents = ClientDocument::where('claim_id', $id)->get();
@@ -24,7 +23,7 @@ class ClaimController extends Controller
         return view('claim.show', compact('claim', 'documents','compensation'));
     }
 
-    public function shows()
+    public function showClaims()
     {
         $claims = Claim::with('insuranceType')->where('user_id', Auth::user()->getAuthIdentifier())->get();
         if ($claims->isEmpty()){
@@ -45,13 +44,16 @@ class ClaimController extends Controller
     {
         return $this->belongsTo(InsuranceType::class);
     }
-    public function store(Request $request)
+    public function claimSaving(Request $request)
     {
         $request->validate([
             'information' => 'required',
             'service_type' => 'required',
         ]);
 
+        if ($request->has('additional_fields')) {
+            $additionalFields = json_encode($request->additional_fields);
+        }
 
         $claim = Claim::create([
             'user_id' => Auth::user()->getAuthIdentifier(),
@@ -60,7 +62,8 @@ class ClaimController extends Controller
             'status_id' => 1,
             'insurance_type_id' => $request->input('insurance_type'),
             'service_type' => $request->input('service_type'),
-            'insurance_id' => $request->input('insurance_id'),
+            'insurance_id' => $request->input('insurance_id') ?? NULL,
+            'additional_fields' => $additionalFields ?? NULL,
         ]);
 
         if ($request->hasFile('document') && $request->file('document')->isValid()) {

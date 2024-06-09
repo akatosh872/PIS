@@ -4,6 +4,7 @@ use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\BackendInsurancesController;
 use App\Http\Controllers\BackendClaimController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\InsuranceController;
 use App\Http\Controllers\EmployeeController;
@@ -28,20 +29,23 @@ Route::get('/', function () {
 
 // Авторизовані користувачі
 Route::middleware(['auth:web'])->group(function () {
-    Route::get('/profile', [InsuranceController::class, 'index'])->name('profile.index');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+
 
     // Заявки
     Route::prefix('claim')->group(function () {
         Route::get('/create', [ClaimController::class, 'create'])->name('claim.create');
-        Route::post('/create', [ClaimController::class, 'store'])->name('claim.store');
-        Route::get('/show/{id}', [ClaimController::class, 'show'])->name('claim.show');
-        Route::get('/shows', [ClaimController::class, 'shows'])->name('claim.shows');
+        Route::post('/create', [ClaimController::class, 'claimSaving'])->name('claim.store');
+        Route::get('/show/{id}', [ClaimController::class, 'showClaim'])->name('claim.show');
+        Route::get('/shows', [ClaimController::class, 'showClaims'])->name('claim.shows');
     });
 
     // Страховки
-    Route::prefix('profile')->group(function () {
-        Route::get('/insurances', [InsuranceController::class, 'insurances'])->name('profile.insurances');
-        Route::get('/insurance/{id}', [InsuranceController::class, 'insurance'])->name('profile.insurance');
+    Route::prefix('insurances')->group(function () {
+        Route::get('/', [InsuranceController::class, 'showAllInsurances'])->name('insurance.insurances');
+        Route::get('/{id}', [InsuranceController::class, 'showInsurance'])->name('insurance.insurance');
     });
 
     // Платежи
@@ -82,15 +86,15 @@ Route::prefix('backend')->group(function () {
     // Заявки
     Route::middleware('auth:employee')->group(function () {
         Route::get('/claim/shows', [BackendClaimController::class, 'showAllClaims'])->name('backend.shows');
-        Route::get('/show/{id}', [BackendClaimController::class, 'show'])->name('backend.show');
+        Route::get('/show/{id}', [BackendClaimController::class, 'showSingleClaim'])->name('backend.show');
         Route::put('/update-claim/{id}', [BackendClaimController::class, 'updateClaim'])->name('backend.updateClaim');
     });
 
     // Страховки
     Route::group(['prefix' => 'insurances'], function () {
-        Route::get('/', [BackendInsurancesController::class, 'shows'])->name('backend.insurances.shows');
-        Route::get('/create', [BackendInsurancesController::class, 'create'])->name('backend.insurances.create');
-        Route::post('/', [BackendInsurancesController::class, 'store'])->name('backend.insurances.store');
+        Route::get('/', [BackendInsurancesController::class, 'showsAllInsurances'])->name('backend.insurances.shows');
+        Route::get('/create', [BackendInsurancesController::class, 'createNewInsurance'])->name('backend.insurances.create');
+        Route::post('/', [BackendInsurancesController::class, 'insuranceSaving'])->name('backend.insurances.store');
         Route::get('/{id}/edit', [BackendInsurancesController::class, 'edit'])->name('backend.insurances.edit');
         Route::put('/{id}', [BackendInsurancesController::class, 'update'])->name('backend.insurances.update');
         Route::delete('/{id}', [BackendInsurancesController::class, 'destroy'])->name('backend.insurances.destroy');

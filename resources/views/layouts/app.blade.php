@@ -4,26 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Страхування - Головна</title>
-    <!-- Підключення бутстрапа -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Додаткові стилі -->
     <style>
-        /* Задаємо висоту для html і body */
         html, body {
             height: 100%;
         }
-        /* Задаємо висоту для контенту */
         .content {
             min-height: calc(100% - 120px); /* 120px - це висота навігаційної панелі і футера */
         }
-        /* Задаємо відступ для футера */
         .footer {
             margin-top: 20px;
         }
     </style>
 </head>
 <body>
-<!-- Навігаційна панель -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
         <a class="navbar-brand" href="#">
@@ -47,7 +41,7 @@
                 @endguest
                 @auth
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('profile.insurances') }}">Поліси</a>
+                        <a class="nav-link" href="{{ route('insurance.insurances') }}">Поліси</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('claim.shows') }}">Залишити заяву</a>

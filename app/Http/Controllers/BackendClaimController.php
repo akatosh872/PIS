@@ -12,9 +12,9 @@ use Illuminate\Http\Request;
 
 class BackendClaimController extends Controller
 {
-    public function show($id)
+    public function showSingleClaim($id)
     {
-        $claim = Claim::with(['status', 'user'])->findOrFail($id);
+        $claim = Claim::with(['status', 'user', 'insuranceType'])->findOrFail($id);
         $documents = ClientDocument::where('claim_id', $id)->get();
         $statuses = Statuses::all();
         $compensation = Compensation::where('claim_id',$id)->first();
@@ -54,13 +54,5 @@ class BackendClaimController extends Controller
 
 
         return redirect()->route('backend.show', $claim->id)->with('success');
-    }
-
-
-    public function showClaimDetails($id)
-    {
-        $claim = Claim::with(['status', 'user', 'insuranceType', 'insurance'])->findOrFail($id);
-
-        return view('backend.claim_details', compact('claim'));
     }
 }

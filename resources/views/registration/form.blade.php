@@ -9,7 +9,7 @@
 
                 <div class="mb-3">
                     <label for="name" class="form-label">Ім'я</label>
-                    <input type="text" id="name" name="name" value="{{ old('name') }}" required autofocus class="form-control">
+                    <input type="text" id="name" name="name" value="{{ old('name') }}" required class="form-control">
                 </div>
 
                 <div class="mb-3">

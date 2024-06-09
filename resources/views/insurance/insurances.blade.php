@@ -32,7 +32,7 @@
                                     <td>{{ $insurance->start_date }}</td>
                                     <td>{{ $insurance->end_date }}</td>
                                     <td>{{ $insurance->enable ? 'Активний' : 'Неактивний' }}</td>
-                                    <td><a href="{{route('profile.insurance', $index+1)}}">Деталі</a></td>
+                                    <td><a href="{{route('insurance.insurance', $index+1)}}">Деталі</a></td>
                                 </tr>
                             @endforeach
                             </tbody>

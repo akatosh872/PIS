@@ -2,32 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Claim;
 use App\Models\Insurance;
 use App\Models\InsuranceType;
 use Illuminate\Http\Request;
 
 class InsuranceController extends Controller
 {
-    public function homePage()
-    {
-        $insuranceType = InsuranceType::all();
-        return view('welcome', compact('insuranceType'));
-    }
-    public function index()
-    {
-        return view('profile.index');
-    }
-
-    public function insurances()
+    public function showAllInsurances()
     {
         $insurances = Insurance::where('user_id',auth()->id())->get();
 
-        return view('profile.insurances', compact('insurances'));
+        return view('insurance.insurances', compact('insurances'));
     }
 
-    public function insurance($id)
+    public function showInsurance($id)
     {
-        $insurance = Insurance::where('id', $id)->first();
-        return view('profile.insurance', compact('insurance'));
+        $claim = Claim::with(['status', 'user', 'insuranceType', 'insurance'])->where('insurance_id', $id)->first();
+
+        return view('insurance.insurance', compact('claim'));
     }
 }

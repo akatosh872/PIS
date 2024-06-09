@@ -14,6 +14,7 @@ class CreateClaimTable extends Migration
             $table->string('contact');
             $table->text('information');
             $table->string('service_type');
+            $table->json('additional_fields')->nullable();
             $table->foreignId('status_id')->constrained();
             $table->foreignId('insurance_type_id')->nullable()->constrained();
             $table->unsignedBigInteger('insurance_id')->nullable();

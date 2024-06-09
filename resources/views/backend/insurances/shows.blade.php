@@ -26,9 +26,9 @@
                             <td>{{ $insurance->start_date }}</td>
                             <td>{{ $insurance->end_date }}</td>
                             <td>{{ \Carbon\Carbon::parse($insurance->end_date)->diffInDays(\Carbon\Carbon::parse($insurance->start_date)) }}</td>
-                            <td>{{ $insurance->number_of_contributions }}</td>
+                            <td>{{ $insurance->installments }}</td>
                             <td>
-                                <a href="{{ route('backend.insurances.edit', $insurance->id) }}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                                <a href="{{ route('backend.insurances.edit', $insurance->id) }}" class="btn btn-primary"><i class="fas fa-edit">Редагувати</i></a>
                                 <form action="{{ route('backend.insurances.destroy', $insurance->id) }}" method="post" class="d-inline">
                                     @csrf
                                     @method('delete')

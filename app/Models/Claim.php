@@ -15,6 +15,7 @@ class Claim extends Model
         'information',
         'status_id',
         'service_type',
+        'additional_fields',
         'insurance_id',
         'insurance_type_id'
     ];

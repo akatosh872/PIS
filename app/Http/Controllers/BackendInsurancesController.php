@@ -2,17 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Insurance;
 use App\Models\Claim;
 use App\Models\InsuranceType;
-use Illuminate\Support\Facades\Auth;
 
 class BackendInsurancesController extends Controller
 {
-    public function create()
+    public function createNewInsurance()
     {
         $claims = Claim::where('service_type','policy')->get();
         $insuranceTypes = InsuranceType::all();
@@ -21,7 +19,7 @@ class BackendInsurancesController extends Controller
         return view('backend.insurances.create', compact('claims', 'insuranceTypes', 'users'));
     }
 
-    public function store(Request $request)
+    public function insuranceSaving(Request $request)
     {
         $request->validate([
             'monthly_fee' => 'required|numeric',
@@ -34,7 +32,7 @@ class BackendInsurancesController extends Controller
         return redirect()->route('backend.insurances.create')->with('success', 'Поліс успішно створений');
     }
 
-    public function shows()
+    public function showsAllInsurances()
     {
         $insurances = Insurance::all();
         return view('backend.insurances.shows', compact('insurances'));
@@ -66,7 +64,7 @@ class BackendInsurancesController extends Controller
         return redirect()->route('backend.insurances.edit', $id)->with('success', 'Поліс успішно оновлений');
     }
 
-    public function destroy($id): \Illuminate\Http\RedirectResponse
+    public function destroy($id)
     {
         $claim = Claim::findOrFail($id);
 

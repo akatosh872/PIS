@@ -32,8 +32,6 @@ class RegistrationController extends Controller
             'email' => $request->input('email'),
             'password' => bcrypt($request->input('password')),
         ]);
-
-        // Автентифікація користувача (опціонально)
         auth()->login($user);
 
         // Перенаправлення на головну сторінку або іншу сторінку
